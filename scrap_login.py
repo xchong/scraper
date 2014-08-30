@@ -35,8 +35,8 @@ for f in br.forms():
 br.select_form(nr=0)
 
 # User credentials
-br.form['username'] = 'xchong'
-br.form['password'] = 'xchong24'
+br.form['username'] = 'your username'
+br.form['password'] = 'your password'
 
 # Login
 br.submit()
