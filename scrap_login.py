@@ -4,6 +4,10 @@ import cookielib
 from BeautifulSoup import BeautifulSoup
 import html2text
 
+
+
+def getloginhtml(url,login_url,username,password,form_num):
+	pass
 # Browser
 br = mechanize.Browser()
 
@@ -32,13 +36,23 @@ for f in br.forms():
     print f
 
 # Select the second (index one) form - the first form is a search query box
-br.select_form(nr=0)
+br.select_form(nr=form_num)
 
 # User credentials
-br.form['username'] = 'your username'
-br.form['password'] = 'your password'
+br.form['username'] = username
+br.form['password'] = password
 
 # Login
 br.submit()
 
-print(br.open('http://hkbici.com/forum.php?gid=1').read())
+print(br.open(login_url).read())
+
+if __name__== main:
+
+  url = input('url-> \n')
+  login_url = input('login_url-> \n')
+  username = input('username-> \n')
+  password = input('password-> \n')
+  form_num = input('form_num-> \n')
+
+  getloginhtml(url,login_url,username,password,form_num)
