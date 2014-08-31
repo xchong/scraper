@@ -1,4 +1,4 @@
-#coding:utf-8
+# -*- coding: utf-8 -*-
 import mechanize
 import cookielib
 from BeautifulSoup import BeautifulSoup
@@ -14,7 +14,7 @@ import os
 
 def getimg(html,dirpath):
 
-	drive = "E:\\img\\"+dirpath
+	drive = "E:\\img\\"+unicode(dirpath,'utf-8')
 	if not os.path.exists(drive):
  	    os.mkdir(drive)
 
@@ -28,12 +28,18 @@ def getimg(html,dirpath):
 		url_asem = "http://hkbici.com/"+url
 		print url_asem,imgname
         #从网址获取资源到本地
-		urllib.urlretrieve(url_asem, os.path.join(drive,imgname))
+		try:
+			urllib.urlretrieve(url_asem, os.path.join(drive,imgname))
+		except:
+			print url_asem+'download failed'
+		
+		
+		
 
 #判断是否下载过
-def isexistedurl(urlp):
-
-	if os.path.exists("e:\\img\\"+urlp):
+def isexistedurl(title):
+    #unicode（）用来解决中文路劲问题
+	if os.path.exists("e:\\img\\"+unicode(title,'utf-8')):
 		return True
 	else:
 		return False
@@ -78,18 +84,18 @@ br.submit()
 
 
 #fetch the html after log in
-htmlpagexml = br.open('http://hkbici.com/forum-18-1.html').read()
+htmlpagexml = br.open('http://hkbici.com/forum-18-7.html').read()
 print(htmlpagexml)
 
 #magin
 print 'fetch url from website \n'
 
 #filter the page url
-urlpagelist =  re.findall(r'<a href="(thread-.*?)"',htmlpagexml)
+urlpagetitlelist =  re.findall(r'<a href="(thread-.*?)".*?title="(.*?)"',htmlpagexml)
 
 #urlpagelist去重复
 newlist = list()
-for item in urlpagelist:
+for item in urlpagetitlelist:
 
 	if  item not in newlist:
 		newlist.append(item) 
@@ -97,18 +103,21 @@ for item in urlpagelist:
 #打印出最终的各个图片页面的url
 print newlist
 
-for urlp in newlist:
+for urlp,title in newlist:
     
-  if isexistedurl(urlp)==True:
+  if isexistedurl(title)==True:
   	  print "exceed"
 	 
   else:
   	 #进入详细图片页面的url
 	  urlpasem = "http://hkbici.com/"+urlp
-	  print urlpasem	    
+	  print urlpasem
+	  #将标题解码成中文标题
+	  title.decode('utf-8')	   
+	  print title
 	  #进入详细图片页面url的xml
 	  htmlimgxml = br.open(urlpasem).read()
-	  getimg(htmlimgxml,urlp)
+	  getimg(htmlimgxml,title)
 
 	     
 
