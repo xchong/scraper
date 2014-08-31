@@ -30,6 +30,13 @@ def getimg(html,dirpath):
         #从网址获取资源到本地
 		urllib.urlretrieve(url_asem, os.path.join(drive,imgname))
 
+#判断是否下载过
+def isexistedurl(urlp):
+
+	if os.path.exists("e:\\img\\"+urlp):
+		return True
+	else:
+		return False
 
 
 # Browser
@@ -71,7 +78,7 @@ br.submit()
 
 
 #fetch the html after log in
-htmlpagexml = br.open('http://hkbici.com/forum-18-2.html').read()
+htmlpagexml = br.open('http://hkbici.com/forum-18-1.html').read()
 print(htmlpagexml)
 
 #magin
@@ -92,13 +99,18 @@ print newlist
 
 for urlp in newlist:
     
-  #进入详细图片页面的url
-  urlpasem = "http://hkbici.com/"+urlp
-  print urlpasem	    
-  #进入详细图片页面url的xml
-  htmlimgxml = br.open(urlpasem).read()
-  getimg(htmlimgxml,urlp)
-     
+  if isexistedurl(urlp)==True:
+  	  print "exceed"
+	 
+  else:
+  	 #进入详细图片页面的url
+	  urlpasem = "http://hkbici.com/"+urlp
+	  print urlpasem	    
+	  #进入详细图片页面url的xml
+	  htmlimgxml = br.open(urlpasem).read()
+	  getimg(htmlimgxml,urlp)
+
+	     
 
 
 
