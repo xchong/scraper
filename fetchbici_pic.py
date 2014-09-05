@@ -13,10 +13,11 @@ import os
 def getimg(html,dirpath):
 
     
-    drive = "E:\\img\\"+dirpath.decode('utf-8')#用来解决中文路劲问题
-
-    if not os.path.exists(drive):
-        os.mkdir(drive)
+    path = "e:\\img\\"
+    title = dirpath.decode('utf-8')
+    new_path = os.path.join(path, title)
+    if not os.path.isdir(new_path):
+      os.makedirs(new_path)
 
     #过滤出图片的url的list
     urllist = re.findall(r'<img.*?zoomfile="(.*?.jpg)"',html)
@@ -29,7 +30,7 @@ def getimg(html,dirpath):
         print url_asem,imgname
         #从网址获取资源到本地
         try:
-            urllib.urlretrieve(url_asem, os.path.join(drive,imgname))
+            urllib.urlretrieve(url_asem, os.path.join(new_path,imgname))
         except:
             print url_asem+'download failed'
         
@@ -43,17 +44,19 @@ def isexistedurl(title):
         return True
     else:
         return False
-
+#判断title是否包含回復二字，判断是否下载过
 def isinclude(title):
 
-    title_comp = '回復'.decode('utf-8')
-    print title_comp       
-     
-    if title in title_comp:
+    print title
+    title_comp = u'回復'.encode('utf-8')
+    #print title_comp       
+    #直接用in就可判断是否包含 
+    if title_comp in title:
+        print "已下载过"
         return True
     else:
         return False
-
+        print "下载中"  
 # Browser
 br = mechanize.Browser()
 
@@ -93,14 +96,14 @@ br.submit()
 
 
 #fetch the html after log in
-htmlpagexml = br.open('http://hkbici.com/forum-18-1.html').read()
+htmlpagexml = br.open('http://hkbici.com/forum-18-3.html').read()
 print(htmlpagexml)
 
 #magin
 print 'fetch url from website \n'
 
 #filter the page url
-urlpagetitlelist =  re.findall(r'<a href="(thread-.*?)" title="(.*?)"',htmlpagexml)
+urlpagetitlelist =  re.findall(r'<a href="(thread-.*?)".*?title="(.*?)"',htmlpagexml)
 
 #urlpagelist去重复
 newlist = list()
@@ -124,7 +127,7 @@ for urlp,title in newlist:
       #将标题解码成中文标题
       title.decode('utf-8')
       print title
-      if isinclude(title):
+      if isinclude(title) == True:
           pass 
       else:
           #进入详细图片页面url的xml
